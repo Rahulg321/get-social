@@ -22,29 +22,13 @@ export async function POST(request: Request) {
         }
       );
 
-    // if (password.length < 8)
-    //   return Response.json(
-    //     { message: "Password must be atleast 8 characters long" },
-    //     {
-    //       status: 400,
-    //     }
-    //   );
-
-    if (!email.includes("@"))
-      return Response.json(
-        { message: "Email must include @" },
-        {
-          status: 400,
-        }
-      );
-
     const user = await db.query.users.findFirst({
       where: eq(users.email, email),
     });
 
-    if (user) {
+    if (!user) {
       return Response.json(
-        { message: "User already exists" },
+        { message: "User was not found" },
         {
           status: 400,
         }
@@ -53,18 +37,16 @@ export async function POST(request: Request) {
 
     const hashedPassword = await hashPassword(password);
 
-    console.log("hashed pwd", hashedPassword);
+    if (user.password !== hashedPassword) {
+      return Response.json(
+        { message: "passwords do not match" },
+        {
+          status: 400,
+        }
+      );
+    }
 
-    const [createdUser] = await db
-      .insert(users)
-      .values({
-        email,
-        //TODO-SALT AND HASH PASSWORD
-        password: hashedPassword,
-      })
-      .returning();
-
-    const token = await generateJwt(createdUser.id);
+    const token = await generateJwt(user.id);
 
     return Response.json(
       { token },

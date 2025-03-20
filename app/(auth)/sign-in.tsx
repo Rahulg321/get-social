@@ -1,26 +1,54 @@
 import AppButton from "@/components/AppButton";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import * as SecureStore from "expo-secure-store";
 
-export default function SignInScreen() {
+export default function SignUpScreen() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignIn = () => {
-    // Add your authentication logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
+  const handleSignUp = async () => {
+    try {
+      if (!email || !password) {
+        alert("Email and password are required");
+      }
+      // Add your authentication logic here
+      console.log("Email:", email);
+      console.log("Password:", password);
+
+      const response = await fetch("/api/sign-in", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        await SecureStore.setItemAsync("token", data.token);
+        router.push("/dashboard/(index)");
+        setEmail("");
+        setPassword("");
+      } else {
+        console.log(response.body);
+        throw new Error("did not get a valid request");
+      }
+
+      console.log("made a post request to sign in");
+    } catch (error) {
+      console.log(error);
+      alert("an error occured while trying to make a post request ");
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign In</Text>
+      <Text style={styles.title}>Sign IN</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -33,12 +61,13 @@ export default function SignInScreen() {
       <TextInput
         style={styles.input}
         placeholder="Password"
+        autoCapitalize="none"
         placeholderTextColor="#999"
         secureTextEntry
         onChangeText={setPassword}
         value={password}
       />
-      <AppButton onPress={handleSignIn}>Sign In</AppButton>
+      <AppButton onPress={handleSignUp}>Sign IN</AppButton>
     </View>
   );
 }

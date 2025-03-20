@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import * as SecureStore from "expo-secure-store";
 
 export default function SignUpScreen() {
   const router = useRouter();
@@ -35,8 +36,8 @@ export default function SignUpScreen() {
       if (response.ok) {
         const data = await response.json();
         console.log(data);
-        localStorage.setItem("token", data.token);
-        router.push("/dashboard");
+        await SecureStore.setItemAsync("token", data.token);
+        router.push("/dashboard/(index)");
       } else {
         console.log(response);
         throw new Error("did not get a valid request");
