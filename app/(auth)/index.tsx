@@ -1,3 +1,4 @@
+import AppButton from "@/components/AppButton";
 import { Text } from "@/components/ui/Form";
 import { useRouter } from "expo-router";
 import { Button, Image, Pressable, StyleSheet, View } from "react-native";
@@ -13,22 +14,22 @@ export default function Page() {
       />
 
       <Text style={styles.title}>Time to get Social</Text>
-      <Pressable
-        style={styles.signInButton}
+      <AppButton
+        style={styles.button}
         onPress={() => {
           router.push("/(auth)/sign-in");
         }}
       >
-        <Text style={styles.buttonText}>Sign In</Text>
-      </Pressable>
-      <Pressable
+        Sign In
+      </AppButton>
+      <AppButton
         style={styles.signUpButton}
         onPress={() => {
           router.push("/(auth)/sign-up");
         }}
       >
-        <Text style={styles.buttonText}>Sign Up</Text>
-      </Pressable>
+        Sign Up
+      </AppButton>
     </View>
   );
 }
@@ -54,16 +55,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
   },
-  signInButton: {
-    padding: 12,
-    marginTop: 4,
-    borderRadius: 8,
-    backgroundColor: "blue",
+  button: {
+    marginTop: 12,
   },
+
   signUpButton: {
-    padding: 12,
-    marginTop: 4,
-    borderRadius: 8,
+    marginTop: 12,
     backgroundColor: "gray",
   },
 });

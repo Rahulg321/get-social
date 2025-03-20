@@ -1,10 +1,76 @@
-import { Text } from "@/components/ui/Form";
-import { Button, StyleSheet, View } from "react-native";
+import AppButton from "@/components/AppButton";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-export default function Page() {
+export default function SignUpScreen() {
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignUp = async () => {
+    try {
+      if (!email || !password) {
+        alert("Email and password are required");
+      }
+      // Add your authentication logic here
+      console.log("Email:", email);
+      console.log("Password:", password);
+
+      const response = await fetch("/api/sign-up", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        localStorage.setItem("token", data.token);
+        router.push("/dashboard");
+      } else {
+        console.log(response);
+        throw new Error("did not get a valid request");
+      }
+
+      console.log("made a post request");
+    } catch (error) {
+      console.log(error);
+      alert("an error occured while trying to make a post request ");
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>This is the Sign Up page</Text>
+      <Text style={styles.title}>Sign Up</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#999"
+        keyboardType="email-address"
+        autoCapitalize="none"
+        onChangeText={setEmail}
+        value={email}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        autoCapitalize="none"
+        placeholderTextColor="#999"
+        secureTextEntry
+        onChangeText={setPassword}
+        value={password}
+      />
+      <AppButton onPress={handleSignUp}>Sign Up</AppButton>
     </View>
   );
 }
@@ -15,10 +81,31 @@ const styles = StyleSheet.create({
     backgroundColor: "#1E1E2F",
     justifyContent: "center",
     alignItems: "center",
+    padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
     color: "white",
+    marginBottom: 40,
+  },
+  input: {
+    width: "100%",
+    backgroundColor: "white",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 20,
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: "#4CAF50",
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
