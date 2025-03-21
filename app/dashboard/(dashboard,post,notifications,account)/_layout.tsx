@@ -1,7 +1,11 @@
 import Stack from "@/components/ui/Stack";
+import { useRouter } from "expo-router";
 import React from "react";
+import { Button } from "react-native";
 
 const Layout = () => {
+  const router = useRouter();
+
   return (
     <Stack>
       <Stack.Screen
@@ -15,6 +19,14 @@ const Layout = () => {
         options={{
           presentation: "modal",
           headerTitle: "Create Post",
+          headerLeft: () => (
+            <Button
+              title="Cancel"
+              onPress={() => {
+                router.back();
+              }}
+            ></Button>
+          ),
         }}
       />
       <Stack.Screen

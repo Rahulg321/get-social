@@ -1,16 +1,70 @@
+import { getPosts } from "@/api/posts";
 import { Text } from "@/components/ui/Form";
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import useAuth from "@/hooks/useAuth";
+import React, { useEffect } from "react";
+import { View, StyleSheet, Platform } from "react-native";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Post } from "@/db/schema";
 
 const page = () => {
+  const { userToken } = useAuth();
+
+  const {
+    data: posts,
+    isLoading,
+    isError,
+    isLoadingError,
+  } = useQuery({
+    queryKey: ["posts"],
+    queryFn: () => getPosts(userToken),
+  });
+
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Loading your feed.......</Text>
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Error occured trying to load your feed</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Main Dashboard Page</Text>
+
+      {posts?.map((post) => {
+        return <PostComponent post={post} key={post.id} />;
+      })}
     </View>
   );
 };
 
 export default page;
+
+function PostComponent({ post }: { post: Post }) {
+  return (
+    <View>
+      <Text
+        style={{
+          color: "white",
+          fontFamily: Platform.select({
+            android: "Poppins_900Black",
+            ios: "Poppins-Black",
+          }),
+        }}
+      >
+        {post.text}
+      </Text>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -25,6 +79,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
     marginBottom: 40,
+  },
+  postTitle: {
+    fontSize: 24,
+    fontWeight: "semibold",
+    color: "red",
+    marginBottom: 25,
   },
   input: {
     width: "100%",

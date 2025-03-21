@@ -4,8 +4,10 @@ import { View } from "react-native";
 
 const NotificationsPage = () => {
   return (
-    <View>
-      <Text>NotificationsPage</Text>
+    <View className="flex items-center justify-center">
+      <Text className="text-pink-600 font-bold text-4xl">
+        NotificationsPage
+      </Text>
     </View>
   );
 };

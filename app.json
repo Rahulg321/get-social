@@ -29,6 +29,15 @@
     },
     "plugins": [
       [
+        "expo-font",
+        {
+          "fonts": [
+            "node_modules/@expo-google-fonts/inter/Inter_900Black.ttf",
+            "node_modules/@expo-google-fonts/inter/Poppins_900Black.ttf"
+          ]
+        }
+      ],
+      [
         "expo-secure-store",
         {
           "configureAndroidBackup": true,

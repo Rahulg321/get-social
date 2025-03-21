@@ -9,7 +9,7 @@ const useAuth = () => {
     const fetchToken = async () => {
       console.log("inside fetch token function");
       const fetchedToken = await secureGet("token");
-      console.log("Fetched token inside use auth", fetchedToken);
+      // console.log("Fetched token inside use auth", fetchedToken);
       setUserToken(fetchedToken || "");
       setLoading(false);
     };
