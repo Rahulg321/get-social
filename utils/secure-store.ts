@@ -1,14 +1,34 @@
 import * as SecureStore from "expo-secure-store";
 
-async function save(key: string, value: string) {
+export async function saveStorage(key: string, value: string) {
   await SecureStore.setItemAsync(key, value);
 }
 
-async function getValueFor(key: string) {
+export async function getValueFromStorage(key: string) {
   let result = await SecureStore.getItemAsync(key);
-  if (result) {
-    alert("🔐 Here's your value 🔐 \n" + result);
+  return result;
+}
+
+export async function secureSave(key: string, value: string) {
+  if (process.env.EXPO_OS === "web") {
+    localStorage.setItem(key, value);
   } else {
-    alert("No values stored under that key.");
+    await SecureStore.setItemAsync(key, value);
+  }
+}
+
+export async function secureGet(key: string) {
+  if (process.env.EXPO_OS === "web") {
+    return localStorage.getItem(key);
+  } else {
+    return await SecureStore.getItemAsync(key);
+  }
+}
+
+export async function secureDelete(key: string) {
+  if (process.env.EXPO_OS === "web") {
+    localStorage.removeItem(key);
+  } else {
+    await SecureStore.deleteItemAsync(key);
   }
 }

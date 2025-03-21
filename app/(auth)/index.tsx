@@ -1,10 +1,37 @@
 import AppButton from "@/components/AppButton";
 import { Text } from "@/components/ui/Form";
+import useAuth from "@/hooks/useAuth";
 import { useRouter } from "expo-router";
-import { Button, Image, Pressable, StyleSheet, View } from "react-native";
+import { useEffect } from "react";
+import {
+  ActivityIndicator,
+  Button,
+  Image,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 
 export default function Page() {
   const router = useRouter();
+
+  const { userToken, isLoading } = useAuth();
+
+  console.log("user token inside index component", userToken);
+
+  useEffect(() => {
+    if (userToken) {
+      router.push("/dashboard/(dashboard)");
+    }
+  }, [isLoading]);
+
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size={"large"} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

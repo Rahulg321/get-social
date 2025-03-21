@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import * as SecureStore from "expo-secure-store";
+import { secureSave } from "@/utils/secure-store";
 
 export default function SignUpScreen() {
   const router = useRouter();
@@ -29,9 +30,10 @@ export default function SignUpScreen() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
-        await SecureStore.setItemAsync("token", data.token);
-        router.push("/dashboard/(index)");
+        console.log("response from api in sign in", data.token);
+        await secureSave("token", data.token);
+        console.log("successfully secured token in storage");
+        router.push("/dashboard/(dashboard)");
         setEmail("");
         setPassword("");
       } else {

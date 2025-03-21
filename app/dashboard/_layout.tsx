@@ -1,18 +1,43 @@
-import ThemeProvider from "@/components/ui/ThemeProvider";
-
 import Tabs from "@/components/ui/Tabs";
+import React from "react";
 
-export default function Layout() {
+const Layout = () => {
   return (
-    <ThemeProvider>
-      <Tabs>
-        <Tabs.Screen name="(index)" systemImage="house.fill" title="Home" />
-        <Tabs.Screen
-          name="(info)"
-          systemImage="cursorarrow.rays"
-          title="Info"
-        />
-      </Tabs>
-    </ThemeProvider>
+    <Tabs>
+      <Tabs.Screen
+        options={{
+          href: "/dashboard",
+        }}
+        name="(dashboard)"
+        title="Feed"
+        systemImage="house.fill"
+      />
+      <Tabs.Screen
+        options={{
+          href: "/dashboard/post",
+        }}
+        name="(post)"
+        title="Post"
+        systemImage="plus"
+      />
+      <Tabs.Screen
+        options={{
+          href: "/dashboard/notifications",
+        }}
+        name="(notifications)"
+        title="Notifications"
+        systemImage="bell.fill"
+      />
+      <Tabs.Screen
+        options={{
+          href: "/dashboard/account",
+        }}
+        name="(account)"
+        title="Account"
+        systemImage="person.circle.fill"
+      />
+    </Tabs>
   );
-}
+};
+
+export default Layout;
