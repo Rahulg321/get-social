@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { secureSave } from "@/utils/secure-store";
+import { signUp } from "@/api/users";
 
 export default function SignUpScreen() {
   const router = useRouter();
@@ -18,37 +19,24 @@ export default function SignUpScreen() {
   const [password, setPassword] = useState("");
 
   const handleSignUp = async () => {
-    try {
-      if (!email || !password) {
-        alert("Email and password are required");
-      }
-      // Add your authentication logic here
-      console.log("Email:", email);
-      console.log("Password:", password);
-
-      const response = await fetch("/api/sign-up", {
-        method: "POST",
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        await secureSave("token", data.token);
-        router.push("/dashboard/(dashboard)");
-      } else {
-        console.log(response);
-        throw new Error("did not get a valid request");
-      }
-
-      console.log("made a post request");
-    } catch (error) {
-      console.log(error);
-      alert("an error occured while trying to make a post request ");
+    if (!email || !password) {
+      alert("Email and password are required");
     }
+    // Add your authentication logic here
+    console.log("Email:", email);
+    console.log("Password:", password);
+    signUp(email, password)
+      .then(async ({ token }) => {
+        alert("Successfully created account");
+        await secureSave("token", token);
+        setEmail("");
+        setPassword("");
+        router.push("/dashboard");
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error);
+      });
   };
 
   return (

@@ -1,14 +1,6 @@
 // user.ts
 import { relations } from "drizzle-orm";
-import {
-  index,
-  pgTable,
-  serial,
-  text,
-  timestamp,
-  uuid,
-  varchar,
-} from "drizzle-orm/pg-core";
+import { index, pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -45,7 +37,7 @@ export const posts = pgTable(
     userId: uuid("user_id").notNull(),
   },
   (t) => ({
-    userIdIdx: index("user_id_idx").on(t.userId),
+    userIdIdx: index("user_posts_id_idx").on(t.userId),
   })
 );
 
@@ -61,6 +53,17 @@ export const profileRelations = relations(profiles, ({ one, many }) => ({
   user: one(users, {
     fields: [profiles.userId],
     references: [users.id],
+  }),
+}));
+
+export const postsRelations = relations(posts, ({ one, many }) => ({
+  author: one(users, {
+    fields: [posts.userId],
+    references: [users.id],
+  }),
+  profile: one(profiles, {
+    fields: [posts.userId],
+    references: [profiles.userId],
   }),
 }));
 

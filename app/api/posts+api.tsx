@@ -14,8 +14,6 @@ async function getUser(req: Request) {
       userId: string;
     };
 
-    console.log("decoded", decoded);
-
     const foundUser = await db.query.users.findFirst({
       where: eq(users.id, decoded.userId),
     });
@@ -27,7 +25,11 @@ async function getUser(req: Request) {
   }
 }
 
-export type GetPostResponse = Post[];
+export type GetPostResponse = (Post & {
+  profile: {
+    displayName: string;
+  };
+})[];
 
 export async function GET(req: Request) {
   try {
@@ -47,6 +49,13 @@ export async function GET(req: Request) {
     const fetchedPosts = await db.query.posts.findMany({
       orderBy: [desc(posts.createdAt)],
       limit: 20,
+      with: {
+        profile: {
+          columns: {
+            displayName: true,
+          },
+        },
+      },
     });
 
     return Response.json(fetchedPosts);

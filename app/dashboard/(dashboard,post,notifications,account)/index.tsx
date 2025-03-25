@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Post } from "@/db/schema";
 import { BodyScrollView } from "@/components/ui/BodyScrollView";
 import { formatDistanceToNow } from "date-fns";
+import { GetPostResponse } from "@/app/api/posts+api";
 
 const page = () => {
   const { userToken } = useAuth();
@@ -40,7 +41,6 @@ const page = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Main Dashboard Page</Text>
-
       {posts?.map((post) => {
         return <PostComponent post={post} key={post.id} />;
       })}
@@ -50,31 +50,21 @@ const page = () => {
 
 export default page;
 
-function PostComponent({ post }: { post: Post }) {
+function PostComponent({ post }: { post: GetPostResponse[number] }) {
   return (
     <BodyScrollView style={styles.postContainer}>
       <View style={styles.headerContainer}>
-        {/* <Avatar // Use the Avatar component
-          rounded
-          source={{
-            uri: "https://randomuser.me/api/portraits/men/1.jpg", // Example URL
-          }}
-          size={40} // Adjust size as needed
-          containerStyle={styles.avatarContainer}
-        /> */}
+        <View style={styles.avatarContainer}>
+          {/* Optional: Add user initial or icon here */}
+        </View>
         <View style={styles.nameDateContainer}>
-          <Text style={styles.nameText}>John Doe</Text>{" "}
-          {/* Replace with actual name */}
+          <Text style={styles.nameText}>{post.profile.displayName}</Text>
           <Text style={styles.dateText}>
-            {formatDistanceToNow(new Date(post.createdAt), {
-              addSuffix: true,
-            })}
-          </Text>{" "}
-          {/* Replace with actual date */}
+            {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+          </Text>
         </View>
       </View>
       <Text style={styles.postText}>{post.text}</Text>
-      {/* You can add more elements here, like a timestamp, author, or image */}
     </BodyScrollView>
   );
 }
@@ -90,15 +80,62 @@ const styles = StyleSheet.create({
   postContainer: {
     backgroundColor: "#2D3748",
     padding: 16,
-    borderRadius: 8,
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    borderRadius: 12,
+    marginHorizontal: 16,
+    marginVertical: 8,
     borderWidth: 1,
     borderColor: "#4A5568",
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+    width: "100%",
+    maxWidth: 600,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  avatarContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#4A5568",
+    marginRight: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#718096",
+  },
+  nameDateContainer: {
+    flex: 1,
+    flexDirection: "column",
+    gap: 2,
+  },
+  nameText: {
+    color: "#fff",
+    fontSize: 16,
+    fontFamily: Platform.select({
+      android: "Poppins_600SemiBold",
+      ios: "Poppins-SemiBold",
+    }),
+    letterSpacing: 0.3,
+  },
+  dateText: {
+    color: "#A0AEC0",
+    fontSize: 13,
+    fontFamily: Platform.select({
+      android: "Poppins_400Regular",
+      ios: "Poppins-Regular",
+    }),
   },
   postText: {
     color: "#F7FAFC",
@@ -106,36 +143,9 @@ const styles = StyleSheet.create({
       android: "Poppins_400Regular",
       ios: "Poppins-Regular",
     }),
-    fontSize: 16,
+    fontSize: 15,
     lineHeight: 24,
-  },
-  headerContainer: {
-    flexDirection: "row",
-    alignItems: "center", // Vertically align avatar and text
-    marginBottom: 8, // Add space between header and post text
-  },
-  avatarContainer: {
-    marginRight: 8, // Add space to the right of the avatar
-  },
-  nameDateContainer: {
-    flexDirection: "column", // Stack name and date vertically
-  },
-  nameText: {
-    color: "#fff", // White for the name
-    fontWeight: "600", // Make the name bold
-    fontSize: 16,
-    fontFamily: Platform.select({
-      android: "Poppins_600SemiBold",
-      ios: "Poppins-SemiBold",
-    }),
-  },
-  dateText: {
-    color: "#A0AEC0", // Gray for the date
-    fontSize: 12,
-    fontFamily: Platform.select({
-      android: "Poppins_400Regular",
-      ios: "Poppins-Regular",
-    }),
+    letterSpacing: 0.3,
   },
   title: {
     fontSize: 28,

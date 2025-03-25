@@ -14,6 +14,7 @@ const Layout = () => {
           headerShown: false,
         }}
       />
+
       <Stack.Screen
         name="post"
         options={{

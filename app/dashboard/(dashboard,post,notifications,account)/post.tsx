@@ -2,6 +2,7 @@ import { createPost } from "@/api/posts";
 import AppButton from "@/components/AppButton";
 import { Text } from "@/components/ui/Form";
 import useAuth from "@/hooks/useAuth";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
@@ -10,16 +11,15 @@ const PostPage = () => {
   const [text, setText] = useState("");
   const router = useRouter();
   const { userToken } = useAuth();
-
-  // if (!userToken) {
-  //   console.log("inside post token ", userToken);
-  //   router.push("/(auth)/sign-in");
-  // }
+  const clientQuery = useQueryClient();
 
   async function handlePost() {
     console.log(text);
     createPost(text, userToken)
       .then((post) => {
+        clientQuery.invalidateQueries({
+          queryKey: ["posts"],
+        });
         router.back();
       })
       .catch((error) => {

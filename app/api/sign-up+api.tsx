@@ -1,8 +1,9 @@
 import { db } from "@/db";
-import { users } from "@/db/schema";
+import { profiles, users } from "@/db/schema";
 import { generateJwt, hashPassword } from "@/utils/auth";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
+import { generateUsername } from "unique-username-generator";
 
 export function GET(request: Request) {
   return Response.json({ hello: "world" });
@@ -63,6 +64,13 @@ export async function POST(request: Request) {
         password: hashedPassword,
       })
       .returning();
+
+    const uniqueDisplayName = generateUsername(" ");
+
+    await db.insert(profiles).values({
+      userId: createdUser.id,
+      displayName: uniqueDisplayName,
+    });
 
     const token = await generateJwt(createdUser.id);
 
