@@ -23,14 +23,6 @@ export async function POST(request: Request) {
         }
       );
 
-    // if (password.length < 8)
-    //   return Response.json(
-    //     { message: "Password must be atleast 8 characters long" },
-    //     {
-    //       status: 400,
-    //     }
-    //   );
-
     if (!email.includes("@"))
       return Response.json(
         { message: "Email must include @" },
