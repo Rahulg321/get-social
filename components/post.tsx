@@ -1,57 +1,40 @@
-import { getPosts } from "@/api/posts";
-import { Text } from "@/components/ui/Form";
-import useAuth from "@/hooks/useAuth";
-import React, { useEffect } from "react";
-import { View, StyleSheet, Platform, Pressable } from "react-native";
-import { useQuery } from "@tanstack/react-query";
-import Post from "@/components/post";
+import { Post } from "@/db/schema";
+import { useRouter } from "expo-router";
+import { BodyScrollView } from "./ui/BodyScrollView";
+import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { formatDistanceToNow } from "date-fns";
 
-const page = () => {
-  const { userToken } = useAuth();
-
-  const {
-    data: posts,
-    isLoading,
-    isError,
-    isLoadingError,
-  } = useQuery({
-    queryKey: ["posts"],
-    queryFn: () => getPosts(userToken),
-  });
-
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Loading your feed.......</Text>
-      </View>
-    );
-  }
-
-  if (isError) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Error occured trying to load your feed</Text>
-      </View>
-    );
-  }
-
+export default function PostComponent({
+  post,
+  displayName,
+}: {
+  post: Post;
+  displayName: string;
+}) {
+  const router = useRouter();
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Main Dashboard Page</Text>
-      {posts?.map((post) => {
-        return (
-          <Post
-            post={post}
-            key={post.id}
-            displayName={post.profile.displayName}
-          />
-        );
-      })}
-    </View>
+    <BodyScrollView style={styles.postContainer}>
+      <View style={styles.headerContainer}>
+        <View style={styles.avatarContainer}>
+          {/* Optional: Add user initial or icon here */}
+        </View>
+        <View style={styles.nameDateContainer}>
+          <Pressable
+            onPress={() => {
+              router.push(`/dashboard/profile/${post.userId}`);
+            }}
+          >
+            <Text style={styles.nameText}>{displayName}</Text>
+          </Pressable>
+          <Text style={styles.dateText}>
+            {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+          </Text>
+        </View>
+      </View>
+      <Text style={styles.postText}>{post.text}</Text>
+    </BodyScrollView>
   );
-};
-
-export default page;
+}
 
 const styles = StyleSheet.create({
   container: {

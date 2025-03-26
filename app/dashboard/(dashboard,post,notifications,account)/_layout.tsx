@@ -40,7 +40,23 @@ const Layout = () => {
       <Stack.Screen
         name="account"
         options={{
-          presentation: "card",
+          headerTitle: "Your Account",
+          presentation: "modal",
+        }}
+      />
+      <Stack.Screen
+        name="profile/[userId]"
+        options={{
+          headerTitle: "Profile",
+          presentation: "modal",
+          headerLeft: () => (
+            <Button
+              title="Go Back"
+              onPress={() => {
+                router.back();
+              }}
+            ></Button>
+          ),
         }}
       />
     </Stack>
