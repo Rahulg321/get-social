@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import { View, StyleSheet, Platform, Pressable } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import Post from "@/components/post";
+import Skeleton from "@/components/ui/Skeleton";
 
 const page = () => {
   const { userToken } = useAuth();
@@ -18,35 +19,29 @@ const page = () => {
     queryKey: ["posts"],
     queryFn: () => getPosts(userToken),
   });
-
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Loading your feed.......</Text>
-      </View>
-    );
-  }
-
-  if (isError) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Error occured trying to load your feed</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Main Dashboard Page</Text>
-      {posts?.map((post) => {
-        return (
-          <Post
-            post={post}
-            key={post.id}
-            displayName={post.profile.displayName}
-          />
-        );
-      })}
+      {isLoading ? (
+        <View style={styles.skeletonContainer}>
+          <Skeleton style={styles.postSkeleton} />
+          <Skeleton style={styles.postSkeleton} />
+          <Skeleton style={styles.postSkeleton} />
+          <Skeleton style={styles.postSkeleton} />
+          <Skeleton style={styles.postSkeleton} />
+          <Skeleton style={styles.postSkeleton} />
+        </View>
+      ) : (
+        posts?.map((post) => {
+          return (
+            <Post
+              post={post}
+              key={post.id}
+              displayName={post.profile.displayName}
+            />
+          );
+        })
+      )}
     </View>
   );
 };
@@ -57,9 +52,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#1E1E2F",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     padding: 20,
+  },
+  skeletonContainer: {
+    gap: 8,
+  },
+  postSkeleton: {
+    height: 70,
+    minWidth: "100%",
   },
   postContainer: {
     backgroundColor: "#2D3748",

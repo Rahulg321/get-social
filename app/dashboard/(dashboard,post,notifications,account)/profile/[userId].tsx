@@ -9,6 +9,7 @@ import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import Post from "@/components/post";
 import AppButton from "@/components/AppButton";
 import { BodyScrollView } from "@/components/ui/BodyScrollView";
+import Skeleton from "@/components/ui/Skeleton";
 
 export default function ProfileScreen() {
   const { userToken } = useAuth();
@@ -24,14 +25,6 @@ export default function ProfileScreen() {
     queryKey: ["user-profile"],
     queryFn: () => getUserProfile(userId, userToken),
   });
-
-  if (isProfileLoading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator />
-      </View>
-    );
-  }
 
   if (userProfileError) {
     return (
@@ -56,18 +49,35 @@ export default function ProfileScreen() {
   return (
     <BodyScrollView>
       <View style={styles.container}>
-        <View style={styles.avatar}></View>
-        <Text style={styles.text}>{profile?.displayName}</Text>
-
-        <View style={styles.followerContainer}>
-          <Text style={styles.followerText}>{userPosts?.length} Posts</Text>
-          <Text style={styles.followerText}>0 Follower</Text>
-          <Text style={styles.followerText}>0 Following</Text>
-        </View>
+        {isProfileLoading ? (
+          <View style={styles.skeletonContainer}>
+            <Text style={styles.text}>Loading User Profile</Text>
+            <Skeleton style={styles.postSkeleton} />
+          </View>
+        ) : (
+          <View
+            style={{
+              flex: 1,
+            }}
+          >
+            <View style={styles.avatar}></View>
+            <Text style={styles.text}>{profile?.displayName}</Text>
+            <View style={styles.followerContainer}>
+              <Text style={styles.followerText}>{userPosts?.length} Posts</Text>
+              <Text style={styles.followerText}>0 Follower</Text>
+              <Text style={styles.followerText}>0 Following</Text>
+            </View>
+          </View>
+        )}
 
         {isUserPostsLoading ? (
-          <View style={styles.container}>
-            <Text style={styles.text}>Loading User Posts</Text>
+          <View style={styles.skeletonContainer}>
+            <Skeleton style={styles.postSkeleton} />
+            <Skeleton style={styles.postSkeleton} />
+            <Skeleton style={styles.postSkeleton} />
+            <Skeleton style={styles.postSkeleton} />
+            <Skeleton style={styles.postSkeleton} />
+            <Skeleton style={styles.postSkeleton} />
           </View>
         ) : (
           userPosts?.map((post) => {
@@ -99,6 +109,13 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 12,
     marginBottom: 12,
+  },
+  skeletonContainer: {
+    gap: 8,
+  },
+  postSkeleton: {
+    height: 70,
+    minWidth: "100%",
   },
   followerText: {
     flex: 1,
