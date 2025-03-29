@@ -18,7 +18,6 @@ export const GET = withAuth(async (req: Request, user: User) => {
       );
     }
 
-    console.log("user id inside get profile", userId);
     const userProfile = await db.query.profiles.findFirst({
       where: eq(profiles.userId, userId),
     });
@@ -36,6 +35,7 @@ export const GET = withAuth(async (req: Request, user: User) => {
 
     return Response.json(userProfile);
   } catch (error) {
+    console.log(error);
     return Response.json(
       {
         error: "Error getting user profile",

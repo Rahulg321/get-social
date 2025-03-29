@@ -24,6 +24,22 @@ export const profiles = pgTable(
   })
 );
 
+export const followers = pgTable(
+  "followers",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("follower_id").notNull(),
+    followingId: uuid("following_id").notNull(),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (t) => ({
+    userIdIdx: index("followers_user_id_idx").on(t.userId),
+    followingIdIdx: index("followers_following_id_idx").on(t.followingId),
+  })
+);
+
 export const posts = pgTable(
   "posts",
   {
@@ -70,3 +86,4 @@ export const postsRelations = relations(posts, ({ one, many }) => ({
 export type Post = typeof posts.$inferSelect;
 export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
+export type Follower = typeof followers.$inferSelect;

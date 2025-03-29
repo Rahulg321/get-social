@@ -1,6 +1,6 @@
 import AppButton from "@/components/AppButton";
 import { Text } from "@/components/ui/Form";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import {

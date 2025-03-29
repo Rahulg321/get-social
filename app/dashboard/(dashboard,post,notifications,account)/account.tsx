@@ -14,7 +14,7 @@ import {
 import * as AC from "@bacons/apple-colors";
 import * as Form from "@/components/ui/Form";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getProfiles, updateProfileDisplayName } from "@/api/profiles";
 
@@ -107,6 +107,7 @@ const AccountPage = () => {
             <Form.Text
               onPress={() => {
                 secureDelete("token");
+                console.log("successfully deleted token");
                 router.replace("/");
               }}
             >

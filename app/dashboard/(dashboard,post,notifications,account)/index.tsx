@@ -1,24 +1,20 @@
 import { getPosts } from "@/api/posts";
 import { Text } from "@/components/ui/Form";
-import useAuth from "@/hooks/useAuth";
 import React, { useEffect } from "react";
 import { View, StyleSheet, Platform, Pressable } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import Post from "@/components/post";
 import Skeleton from "@/components/ui/Skeleton";
+import { useAuth } from "@/hooks/useAuth";
 
 const page = () => {
   const { userToken } = useAuth();
 
-  const {
-    data: posts,
-    isLoading,
-    isError,
-    isLoadingError,
-  } = useQuery({
+  const { data: posts, isLoading } = useQuery({
     queryKey: ["posts"],
     queryFn: () => getPosts(userToken),
   });
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Main Dashboard Page</Text>

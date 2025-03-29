@@ -1,17 +1,22 @@
 import { getValueFromStorage, secureGet } from "@/utils/secure-store";
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "./authProvider";
 
-const useAuth = () => {
-  const [userToken, setUserToken] = useState("");
-  const [loading, setLoading] = useState(true);
+export const useAuth = () => {
+  const {
+    token: userToken,
+    isLoading,
+    setToken,
+    setIsLoading,
+  } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchToken = async () => {
       console.log("inside fetch token function");
       const fetchedToken = await secureGet("token");
       // console.log("Fetched token inside use auth", fetchedToken);
-      setUserToken(fetchedToken || "");
-      setLoading(false);
+      setToken(fetchedToken || "");
+      setIsLoading(false);
     };
 
     fetchToken();
@@ -19,8 +24,6 @@ const useAuth = () => {
 
   return {
     userToken,
-    isLoading: loading,
+    isLoading,
   };
 };
-
-export default useAuth;
