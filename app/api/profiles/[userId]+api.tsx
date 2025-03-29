@@ -1,7 +1,12 @@
 import { db } from "@/db";
-import { profiles, User } from "@/db/schema";
+import { followers, Profile, profiles, User } from "@/db/schema";
 import { withAuth } from "@/utils/withAuth";
-import { eq } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
+
+export type ProfileResponse = Profile & {
+  followersCount: number;
+  followingCount: number;
+};
 
 export const GET = withAuth(async (req: Request, user: User) => {
   try {
@@ -33,7 +38,25 @@ export const GET = withAuth(async (req: Request, user: User) => {
       );
     }
 
-    return Response.json(userProfile);
+    const followingCount = await db
+      .select({
+        count: count(),
+      })
+      .from(followers)
+      .where(eq(followers.userId, userId));
+
+    const followersCount = await db
+      .select({
+        count: count(),
+      })
+      .from(followers)
+      .where(eq(followers.followingId, userId));
+
+    return Response.json({
+      ...userProfile,
+      followingCount: followingCount[0].count,
+      followersCount: followersCount[0].count,
+    });
   } catch (error) {
     console.log(error);
     return Response.json(

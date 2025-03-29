@@ -70,6 +70,10 @@ export default function ProfileScreen() {
         queryClient.invalidateQueries({
           queryKey: ["following", userId],
         });
+
+        queryClient.invalidateQueries({
+          queryKey: ["user-profile"],
+        });
       },
     });
 
@@ -114,11 +118,15 @@ export default function ProfileScreen() {
                 <Text style={styles.followerLabel}>Posts</Text>
               </View>
               <View style={styles.followerItem}>
-                <Text style={styles.followerCount}>0</Text>
+                <Text style={styles.followerCount}>
+                  {profile?.followersCount || 0}
+                </Text>
                 <Text style={styles.followerLabel}>Followers</Text>
               </View>
               <View style={styles.followerItem}>
-                <Text style={styles.followerCount}>0</Text>
+                <Text style={styles.followerCount}>
+                  {profile?.followingCount || 0}
+                </Text>
                 <Text style={styles.followerLabel}>Following</Text>
               </View>
             </View>

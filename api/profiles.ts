@@ -1,3 +1,4 @@
+import { ProfileResponse } from "@/app/api/profiles/[userId]+api";
 import { Profile } from "@/db/schema";
 
 export async function getProfiles(token: string): Promise<Profile> {
@@ -49,7 +50,7 @@ export async function updateProfileDisplayName(
 export async function getUserProfile(
   userId: string,
   token: string
-): Promise<Profile> {
+): Promise<ProfileResponse> {
   try {
     return fetch(`/api/profiles/${userId}`, {
       method: "GET",
@@ -58,7 +59,7 @@ export async function getUserProfile(
       },
     }).then(async (e) => {
       if (e.ok) {
-        return await e.json();
+        return (await e.json()) as ProfileResponse;
       } else {
         const error = await e.json();
         throw new Error(error.error);
